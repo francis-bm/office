@@ -24,9 +24,7 @@ services:
       dictionaries: "en_US es_ES fr_FR"
     networks:
       - collabora_net
-    volumes:
-      - ./collabora/config:/etc/coolwsd
-      - ./collabora/log:/var/log/loolwsd
+    
 
   nginx:
     image: nginx:stable-alpine
