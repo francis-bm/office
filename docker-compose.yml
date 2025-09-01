@@ -24,6 +24,13 @@ services:
     networks:
       - collabora_net
     
+  wopi:
+    build: ./wopi
+    container_name: wopi_app
+    env_file: ./wopi/.env
+    expose:
+      - "5000"
+    restart: unless-stopped
 
   nginx:
     image: nginx:stable-alpine
@@ -38,6 +45,7 @@ services:
       - ./certbot/conf:/etc/letsencrypt
     depends_on:
       - collabora
+      - wopi
     networks:
       - collabora_net
 
