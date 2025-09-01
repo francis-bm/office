@@ -17,4 +17,4 @@ ENV PORT=5000
 EXPOSE ${PORT}
 
 # Run the app (use your actual start script)
-CMD ["node", "server.js"]
+CMD ["node", "index.js"]
