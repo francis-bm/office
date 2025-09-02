@@ -45,8 +45,8 @@ function generateToken(fileId) {
 const tokenStore = {}; // { token: fileId }
 
 // 🔹 Get file metadata
-app.get("/wopi/files", async (req, res) => {
-  const fileId = req.query.path;
+app.get("/wopi/files/:file_id", async (req, res) => {
+  const fileId = decodeURIComponent(req.params.file_id);
   if (!fileId) return res.status(400).json({ error: "Missing file path" });
 
   try {
@@ -72,8 +72,8 @@ app.get("/wopi/files", async (req, res) => {
 });
 
 // 🔹 Get file contents from S3
-app.get("/wopi/files/contents", async (req, res) => {
-  const fileId = req.query.path;
+app.get("/wopi/files/:file_id/contents", async (req, res) => {
+  const fileId = decodeURIComponent(req.params.file_id);
   if (!fileId) return res.status(400).json({ error: "Missing file path" });
 
   try {
@@ -93,15 +93,15 @@ app.get("/wopi/files/contents", async (req, res) => {
 });
 
 // 🔹 Save file contents back to S3
-app.post("/wopi/files/contents", async (req, res) => {
-  const fileId = req.query.path;
+app.post("/wopi/files/:file_id/contents", async (req, res) => {
+  const fileId = decodeURIComponent(req.params.file_id);
   if (!fileId) return res.status(400).json({ error: "Missing file path" });
 
   try {
     const upload = new PutObjectCommand({
       Bucket: BUCKET,
       Key: fileId,
-      Body: req, // stream from Collabora
+      Body: req,
     });
 
     await s3.send(upload);
@@ -121,8 +121,9 @@ app.get("/access", (req, res) => {
   const token = generateToken(fileId);
   tokenStore[token] = fileId;
 
+  const encodedFileId = encodeURIComponent(fileId);
   const WOPISrc = encodeURIComponent(
-    `${process.env.WOPI_HOST_DOMAIN}/wopi/files?path=${fileId}`
+    `${process.env.WOPI_HOST_DOMAIN}/wopi/files/${encodedFileId}`
   );
 
   res.json({
