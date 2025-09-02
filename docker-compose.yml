@@ -1,29 +1,24 @@
-
 services:
   collabora:
     image: collabora/code:latest
     container_name: collabora
     restart: always
-    privileged: true
+    privileged: true              # consider removing if not required
     environment:
-      # Allow WOPI hosts: all subdomains of reef.lat, reef.lat, and localhost
       aliasgroup1: "https://.*\\.reef\\.lat:443,https://reef.lat:443,https://localhost:443,http://localhost:80"
-
-      # Tell CODE there's a reverse proxy (used in coolwsd config)
-      server_name: "https://office.reef.lat"
-
-      # Disable SSL inside CODE (we terminate TLS at nginx)
+      server_name: "https://office.reef.lat"   # verify format with CODE docs (might expect hostname only)
       extra_params: "--o:ssl.enable=false"
-
-      # Admin console (change for production)
       username: "admin"
-      password: "reeflatcom"
-
-      # Optional dictionaries (adjust as needed)
+      password: "reeflatcom"      # don't store this in repo for production
       dictionaries: "en_US es_ES fr_FR"
     networks:
       - collabora_net
-    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9980/lool/healthcheck" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   wopi:
     build: ./wopi
     container_name: wopi_app
@@ -31,6 +26,8 @@ services:
     expose:
       - "5000"
     restart: unless-stopped
+    networks:
+      - collabora_net
 
   nginx:
     image: nginx:stable-alpine
@@ -52,10 +49,11 @@ services:
   certbot:
     image: certbot/certbot
     container_name: collabora-certbot
+    restart: unless-stopped
     volumes:
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf:/etc/letsencrypt
-    entrypoint: ["sh", "-c", "trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew --webroot -w /var/www/certbot --quiet --deploy-hook 'nginx -s reload' || true; done"]
+    entrypoint: ["sh", "-c", "trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew --webroot -w /var/www/certbot --quiet || true; done"]
     networks:
       - collabora_net
 
