@@ -6,7 +6,7 @@ services:
     privileged: true              # consider removing if not required
     environment:
       aliasgroup1: "https://.*\\.reef\\.lat:443,https://reef.lat:443,https://localhost:443,http://localhost:80,https://wopi-host-server.vercel.app/"
-      server_name: "https://office.reef.lat"   # verify format with CODE docs (might expect hostname only)
+      server_name: "office.reef.lat"   # verify format with CODE docs (might expect hostname only)
       extra_params: "--o:ssl.enable=false"
       username: "admin"
       password: "reeflatcom"      # don't store this in repo for production
@@ -14,7 +14,7 @@ services:
     networks:
       - collabora_net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9980/lool/healthcheck" ]
+      test: ["CMD", "curl", "-f", "https://localhost:9980/lool/healthcheck" ]
       interval: 30s
       timeout: 10s
       retries: 5
