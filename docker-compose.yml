@@ -7,7 +7,7 @@ services:
     environment:
       aliasgroup1: "https://.*\\.reef\\.lat:443,https://reef.lat:443,https://localhost:443,http://localhost:80,https://wopi-host-server.vercel.app/"
       server_name: "office.reef.lat"   # verify format with CODE docs (might expect hostname only)
-      extra_params: "--o:ssl.enable=false"
+      extra_params: "--o:ssl.enable=false --o:ssl.termination=true"
       username: "admin"
       password: "reeflatcom"      # don't store this in repo for production
       dictionaries: "en_US es_ES fr_FR"
