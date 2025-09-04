@@ -6,7 +6,7 @@ services:
     privileged: true              # consider removing if not required
     environment:
       # allow all reef.lat subdomains and explicit WOPI host
-      aliasgroup1: 'https://.*\.reef\.lat:443,https://reef.lat:443,https://wopi.reef.lat:443,http://localhost:80,https://localhost:443'
+      aliasgroup1: 'https://wopi.reef.lat:443,https://office.reef.lat:443,https://reef.lat:443,http://localhost:80,https://localhost:443'
       server_name: 'office.reef.lat'
       extra_params: '--o:ssl.enable=false --o:ssl.termination=true'
       username: 'admin'
