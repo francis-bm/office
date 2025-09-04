@@ -5,12 +5,13 @@ services:
     restart: always
     privileged: true              # consider removing if not required
     environment:
-      aliasgroup1: "https://.*\\.reef\\.lat:443,https://reef.lat:443,https://localhost:443,http://localhost:80,https://wopi-host-server.vercel.app:443"
-      server_name: "office.reef.lat"   # verify format with CODE docs (might expect hostname only)
-      extra_params: "--o:ssl.enable=false --o:ssl.termination=true"
-      username: "admin"
-      password: "reeflatcom"      # don't store this in repo for production
-      dictionaries: "en_US es_ES fr_FR"
+      # allow all reef.lat subdomains and explicit WOPI host
+      aliasgroup1: 'https://.*\.reef\.lat:443,https://reef.lat:443,https://wopi.reef.lat:443,http://localhost:80,https://localhost:443'
+      server_name: 'office.reef.lat'
+      extra_params: '--o:ssl.enable=false --o:ssl.termination=true'
+      username: 'admin'
+      password: 'reeflatcom'
+      dictionaries: 'en_US es_ES fr_FR'
     networks:
       - collabora_net
     healthcheck:
